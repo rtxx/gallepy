@@ -1,0 +1,9 @@
+<div class="column" href="{{image.path}}"
+     hx-get="/image/full/{{image.number}}"
+     hx-trigger="click"
+     hx-target="body"
+     hx-swap="beforeend">
+    <img class="thumbnail" alt="{{image.name}}"
+         src="{{image.thumbnail}}"
+         width="256">
+</div>

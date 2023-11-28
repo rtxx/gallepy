@@ -1,0 +1,18 @@
+<div id="gallery" class="row fade-in">
+    {% if image_array == []  %}
+    <p></p>
+    <p class="container">no images available.</p>
+    <p></p>
+    {% endif %}
+    {% for image in image_array %}
+        <div class="column" href=""
+              hx-get="/image/thumbnail/{{image.number}}"
+              hx-trigger="revealed"
+              hx-target="this"
+              hx-swap="outerHTML">
+            <img class="htmx-indicator thumbnail" alt="loading {{image.name}}"
+                 src="{{ url_for('static', filename='loading_bars.svg') }}"
+                 width="256">
+        </div>
+    {% endfor %}
+</div>

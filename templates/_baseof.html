@@ -1,0 +1,35 @@
+<!-- begin templates/_baseof.html -->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta description="simple flask and htmx based image gallery">
+		<!-- CSS -->
+		<link rel="stylesheet" href="/static/css/colors.min.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/modern-normalize.css" />
+		<link rel="stylesheet" href="/static/css/water.css">
+		<!-- custom css for gallepy -->
+		<link rel="stylesheet" type="text/css" href="/static/css/gallepy.css" />
+		<!-- HTMX with Hyperscript -->
+		<script src="https://unpkg.com/htmx.org" crossorigin="anonymous"></script>
+		<script src="https://unpkg.com/hyperscript.org" crossorigin="anonymous"></script>
+		<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+		<title>gallepy</title>
+	</head>
+	<body>
+		{% include "partials/navbar/navbar.html" %}
+		<hr/>
+		<div>
+			{% block main %}
+			{% endblock main %}
+		</div>
+		<footer>
+			<p align="center">gallepy - v0.0.6</p>
+			<p align="right"><a href="#">Back to top ⬆</a></p>
+		</footer>
+		<!-- https://codepen.io/julesforrest/pen/qLpgNB -->
+	</body>
+</html>
+<!-- end templates/_baseof.html -->
