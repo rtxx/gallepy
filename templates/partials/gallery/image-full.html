@@ -10,7 +10,7 @@
                          src="{{ url_for('static', filename='loading_bars.svg') }}" >
                 </span>
                 <a class="overlay_left" href="#"
-                   hx-get="/image/full/{{image.number-1}}/modal"
+                   hx-get="/image/full/{{image.number}}/{{image.number-1}}/modal"
                    hx-trigger="click, keyup[key=='ArrowLeft'] from:body"
                    hx-target="#modal-content">
                     <svg xmlns="http://www.w3.org/2000/svg" class="blue"
@@ -19,7 +19,7 @@
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>
                 </a>
                 <a class="overlay_right" href="#"
-                   hx-get="/image/full/{{image.number+1}}/modal"
+                   hx-get="/image/full/{{image.number}}/{{image.number+1}}/modal"
                    hx-trigger="click, keyup[key=='ArrowRight'] from:body"
                    hx-target="#modal-content">
                     <svg xmlns="http://www.w3.org/2000/svg" class="blue"

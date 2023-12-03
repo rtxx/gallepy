@@ -1,5 +1,5 @@
 from flask import Blueprint
-import os
+import os, bcrypt
 from .configs import *
 bp = Blueprint('db', __name__)
 
@@ -16,6 +16,49 @@ class GalleryImage:
         self.w = 1  # random.randrange(128,512)
         self.h = 1  # random.randrange(128,512)
         self.album = album or "private"
+
+
+class User:
+    id = -1
+    # hashed_password   ->
+    # salt              ->
+    def __init__(self, name, username, hashed_password, salt, type, albuns):
+        User.id += 1
+        self.id = User.id
+        self.name = name
+        self.username = username
+        self.hashed_password = hashed_password
+        self.salt = salt
+        self.type = type
+        self.albuns = albuns or ["public"]
+
+def init_users_db():
+    users = []
+
+    password = "admin1234"
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    user = User("admininistrator",
+                "admin",
+                hashed_password,
+                salt,
+                "admin",
+                ["*"]
+                )
+    users.append(user)
+
+    password = "ruirui"
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    user = User("rui teixeira",
+                "ruitx",
+                hashed_password,
+                salt,
+                "user",
+                ["public","album1"]
+                )
+    users.append(user)
+    return users
 
 
 # init dummy db
@@ -35,7 +78,7 @@ def init_db():
     return imgs
 """
 
-def init_db():
+def init_images_db():
     imgs = []
     print(f"Searching '{GALLERY_PATH}' for images...")
     for file in os.listdir(GALLERY_PATH):
@@ -65,7 +108,7 @@ def init_db():
                                          file,
                                          f"./static/thumbnails/{file}/{album_img}")
                     imgs.append(image)
-                    print(f"{image.name} : image added to 'db' as {file} - {image.number}")
+                    print(f"{image.name} : image added to 'db' as {file}")
                 else:
                     print(f"[ERROR] {current_gallery_img} : file is not a image, ignoring...")
 

@@ -1,11 +1,13 @@
 from flask import render_template, render_template_string, request, session, make_response, redirect, send_file
+import bcrypt
 from .db import *
 
 bp = Blueprint('main', __name__)
 
 
 # init db
-images = init_db()
+images = init_images_db()
+users = init_users_db()
 
 
 # routes
@@ -18,16 +20,20 @@ def route_root():
 
 
 # gallery
-# renders gallery. it groups the images in page_size size, the idea being of have pages like 1 to 5 and loads
-# accordingly (it does nothing as of now)
-# it only renders if user is logged in
+# renders gallery.
+# it only renders if user is logged in and if user is allowed to view said album
 @bp.route("/gallery", methods=['GET'])
 def route_gallery():
     username = session.get('username')
     if username is not None:
+        user_data = []
+        for user in users:
+            if username == user.username:
+                user_data = user
         image_array = []
         for image in images:
-            image_array.append(image)
+            if image.album in user_data.albuns or user_data.type == "admin":
+                image_array.append(image)
         return render_template("/partials/gallery/gallery.html", image_array=image_array)
     else:
         image_array = []
@@ -58,11 +64,29 @@ def route_image_full(number):
 
 
 # gets full image for the modal, so it won't flicker the background of the modal when switching
-@bp.route("/image/full/<number>/modal", methods=['GET'])
-def route_image_full_modal(number):
-    number = int(number)
-    image = images[number]
-    return render_template("/partials/gallery/image-full-modal.html", image=image)
+@bp.route("/image/full/<from_image_number>/<to_image_number>/modal", methods=['GET'])
+def route_image_full_modal(from_image_number, to_image_number):
+    from_image_number = int(from_image_number)
+    to_image_number = int(to_image_number)
+
+    if to_image_number >= len(images):
+        to_image_number = len(images) - 1
+
+    to_image = images[to_image_number]
+    from_image = images[from_image_number]
+
+    username = session.get('username')
+    if username is not None:
+        user_data = []
+        for user in users:
+            if username == user.username:
+                user_data = user
+                if to_image.album in user_data.albuns or user_data.type == "admin":
+                    return render_template("/partials/gallery/image-full-modal.html", image=to_image)
+                else:
+                    return render_template("/partials/gallery/image-full-modal.html", image=from_image)
+    else:
+        return render_template("/partials/gallery/image-full-modal.html", image=from_image)
 
 
 # gets full image for the modal, so it won't flicker the background of the modal when switching
@@ -89,6 +113,8 @@ def route_image_full_check(image_name, extension):
                     return send_file(image_path, mimetype=f"image/{extension}")
         return redirect("/")
 
+
+# this is prevent unauthorized access if not logged in, workaround for albuns routes
 @bp.route("/static/gallery/<album>/<image_name>.<extension>", methods=['GET'])
 def route_image_full_album_check(album, image_name, extension):
     username = session.get('username')
@@ -102,6 +128,7 @@ def route_image_full_album_check(album, image_name, extension):
                     image_path = f"{GALLERY_PATH}/{album}/{image_name}.{extension}"
                     return send_file(image_path, mimetype=f"image/{extension}")
         return redirect("/")
+
 
 # renders a blank page
 @bp.route("/blank", methods=['GET'])
@@ -117,6 +144,7 @@ def route_about():
 
 @bp.route("/login", methods=['GET'])
 def route_login():
+    session.permanent = True
     username = session.get('username')
     if username is not None:
         return render_template("backoffice/backoffice.html", username=username)
@@ -127,35 +155,19 @@ def route_login():
 def route_login_request():
     username = request.form['username']
     password = request.form['password']
-    if username == "admin" and password == "admin1234!!##":
-        session['username'] = username
-        # return render_template("backoffice/backoffice.html", username=username)
-        templ = f"""            
-            <p>welcome back, <bold>{username}</bold>! loading your backoffice...</p>
-            <a id="btn_login"
-               href=""
-               align="right"
-               hx-get="/backoffice"
-               hx-trigger="click"
-               hx-target="#pages"
-               hx-swap="innerHTML settle:175ms">
-                click here to continue if not redirected...
-            </a>
-            """
-        r = make_response(render_template_string(templ))
-        r.headers.set("HX-Trigger", "login")
-        return r
-
+    for user in users:
+        if username == user.username:
+            password_bytes = password.encode('utf-8')
+            check_hash = bcrypt.checkpw(password_bytes, user.hashed_password)
+            if check_hash:
+                session['username'] = user.username
+                r = make_response(render_template("/partials/login/login-successful.html",user=user))
+                r.headers.set("HX-Trigger", "login")
+                return r
+            else:
+                return render_template("/partials/login/login-error.html")
     else:
-        templ = """
-            <form hx-post="/login_request" hx-target="#login_form" hx-swap="innerHTML">
-                <input type="text" title="username" name="username" placeholder="username" required/>
-                <input type="password" title="username" name="password" placeholder="password" required />
-                <button type="submit">Login</button>
-            </form>
-            <p>incorrect credencials</p>
-            """
-        return render_template_string(templ)
+        return render_template("/partials/login/login-error.html")
 
 
 @bp.route("/backoffice", methods=['GET'])
@@ -174,4 +186,3 @@ def route_logout():
     r = make_response(render_template("/partials/login/logout.html", username=username))
     r.headers.set("HX-Trigger", "logout")
     return r
-    # return render_template("/partials/login/logout.html", username=username)
