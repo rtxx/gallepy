@@ -1,3 +1,16 @@
+## [0.1-hotfix2] - 2024-01-22
+
+### Added
+
+- Add to remove dist/ from .gitignore because PhotoSwipe is on a folder called dist 
+- Added 2 images to the gallery so when gallepy is launched it has something to display.
+
+## [0.1-hotfix1] - 2024-01-22
+
+### Changed
+
+- Changed README.md, CHANGELOG.md and LICENSE to root folder
+
 ## [0.1] - 2024-01-22
 
 This is not the 1st version of this project, but it will be from now on.
