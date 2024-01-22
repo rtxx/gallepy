@@ -37,9 +37,9 @@ clone git https://github.com/rtxx/gallepy.git
 
 - Copy the images to the gallery folder:
 ```
-gallepy/static/images
+gallepy/static/images/gallery
 ```
-> If you need to create albuns, they are just subfolders of ```gallepy/static/images```
+> If you need to create albuns, they are just subfolders of ```gallepy/static/images/gallery```
 
 - Then generate the thumbnails: 
 ```
