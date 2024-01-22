@@ -1,4 +1,5 @@
 
+
 # gallepy
 > Photo gallery made with flask and htmx
 
@@ -15,7 +16,7 @@ It has some features, like:
 - Made with [Bulma CSS](https://bulma.io/)
 
 Check [here](https://photos.ruiteixeira.me) to see in action.
-
+![Main Page](https://cloud.ducknexus.com/s/bfYLqRaBpFdZnXx/download/gallepy1.png)![User page](https://cloud.ducknexus.com/s/XDbnjsLGy422erW/download/gallepy3.png)
 ## Python requirments
 
 - flask
