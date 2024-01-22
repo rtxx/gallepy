@@ -1,0 +1,40 @@
+<!-- begin templates/about.html -->
+<div class="fade-in fade-out" id="about_page">
+<span class="is-danger"
+      hx-get="/blank"
+      hx-trigger="click"
+      hx-target="#pages"
+      hx-swap="innerHTML swap:175ms">
+    <p align="right">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" />
+            <path d="M6 6l12 12" />
+        </svg>
+    </p>
+</span>
+    <h1 class="title">Usage</h1>
+    <div class="content">
+        Using gallepy is simple:
+        <ul>
+            <li>Click on a thumbnail.</li>
+            <li>Click the arrows to navigate.</li>
+            <li>Click on the center of the image do download it.</li>
+        </ul>
+    </div>
+    <h1 class="title">About</h1>
+    <div class="content">
+        gallepy is a simple gallery made with python and htmx. I made it in an atempt to learn flask and htmx.
+        To use it, simply put your photos on the gallery folder and that's it!
+        <p>It has some features, like:</p>
+        <ul>
+            <li>Thumbnails are created for each image automatically</li>
+            <li>Lazy loading</li>
+            <li>Infinite scroll</li>
+            <li>Smooth CSS animations</li>
+        </ul>
+    </div>
+    <hr/>
+</div>
+
+<!-- end templates/about.html -->
+

@@ -1,0 +1,134 @@
+{% if user.type == "admin"  %}
+<div class="box has-background-info-light">
+  <label class="label">Administration</label>
+  <!-- create new user form -->
+  <div class="box">
+    <fieldset disabled>
+      <label class="label">Create new user</label>
+      <div class="field">
+        <label class="label">Name</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="Fullname">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Username</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="Username">
+        </div>
+        <p class="help"></p>
+      </div>
+
+      <div class="field">
+        <label class="label">Password</label>
+        <div class="control">
+          <input class="input" type="password" placeholder="Password" >
+        </div>
+        <p class="help"></p>
+      </div>
+
+      <div class="field">
+        <label class="label">Albuns</label>
+        <div class="control">
+          <div class="select">
+            <select>
+              <option>Select dropdown</option>
+              <option>With options</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="button is-link">Submit</button>
+        </div>
+      </div>
+      <p class="help">You can create a new user with this form.</p>
+    </fieldset>
+  </div>
+
+  <!-- update albuns permissions -->
+  <div class="box">
+    <fieldset disabled>
+      <label class="label">Update album permissions</label>
+      <div class="field">
+        <label class="label">Username</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="Username">
+        </div>
+        <p class="help"></p>
+      </div>
+
+      <div class="field">
+        <label class="label">Albuns</label>
+        <div class="control">
+          <div class="select">
+            <select>
+              <option>Select dropdown</option>
+              <option>With options</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="button is-link">Submit</button>
+        </div>
+      </div>
+      <p class="help">You can update album permissions per user with this form.</p>
+    </fieldset>
+  </div>
+</div>
+{% endif %}
+
+<!-- change password form -->
+<div class="box">
+  <fieldset disabled>
+    <label class="label">Update password</label>
+    <div class="field">
+      <div class="control">
+        <input class="input" type="password" placeholder="Current password">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <input class="input" type="password" placeholder="New password">
+      </div>
+      <p class="help"></p>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <input class="input" type="password" placeholder="Confirm new password" >
+      </div>
+      <p class="help"></p>
+    </div>
+
+    <div class="field is-grouped">
+      <div class="control">
+        <button class="button is-link">Submit</button>
+      </div>
+    </div>
+    <p class="help">You can change the password with this form.</p>
+  </fieldset>
+</div>
+
+<div class="box">
+  <div class="field">
+    <label class="label">Logout</label>
+    <div class="control">
+      <a class="button is-light"
+         hx-get="/logout"
+         hx-trigger="click"
+         hx-target="#pages"
+         hx-swap="innerHTML swap:175ms">
+        Click here
+      </a>
+    </div>
+  </div>
+  <p class="help">You can logout here.</p>
+</div>

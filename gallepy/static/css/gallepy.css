@@ -1,0 +1,531 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Universal
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/* Apply styling to all elements (including their `::before` and `::after`
+pseudo-elements). One common use of this selector is to apply a custom
+`box-sizing`. font-family: Menlo, monospace;*/
+*, *::before, *::after {
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Root
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+:root {}
+html {}
+body {
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Content sectioning
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+h1, h2, h3, h4, h5, h6 {}
+h1 {}
+h2 {}
+h3 {}
+h4 {}
+h5 {}
+h6 {}
+
+header {}
+
+nav {}
+nav ul, nav ol {}
+nav li {}
+nav a {}
+nav a:visited {}
+nav a:hover {}
+nav a:active {}
+
+main {}
+
+article {}
+
+section {}
+
+aside {}
+
+search {}
+
+footer {}
+
+address {}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Text block content
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/* Overall styling, e.g. vertical spacing */
+p, ol, ul, pre, blockquote, figure, hr, dl {}
+
+p {}
+
+ol, ul {}
+ol {}
+ul {}
+li {}
+ol ol, ol ul, ul ul, ul ol {}
+li li {}
+
+pre {}
+pre code {}
+pre samp {}
+
+blockquote {}
+
+figure {}
+figcaption {}
+
+hr {}
+
+dl {}
+dt {}
+dd {}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Inline text semantics
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+a {}
+a:visited {}
+a:hover {}
+a:active {}
+
+strong {}
+b {}
+
+em {}
+i {}
+
+q {}
+cite {}
+
+s {}
+
+mark {}
+
+/* If you specify a font size, consider using the `em` unit so that it works
+universally, e.g. for both `h1 small` and `p small` */
+small {}
+sub {}
+sup {}
+
+code {}
+
+dfn {}
+abbr {}
+abbr[title] {}
+
+var {}
+kbd {}
+kbd kbd {}
+samp {}
+
+u {}
+
+data {}
+time {}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Demarcating edits
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+del {}
+ins {}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Embedded content
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+img {}
+svg {}
+video {}
+canvas {}
+audio {}
+object {}
+
+noscript {}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Table content
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+table {}
+caption {}
+col:first-child {}
+thead {}
+tbody {}
+tfoot {}
+tr {}
+th {}
+td {}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Forms
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+fieldset {}
+fieldset:disabled {}
+legend {}
+
+form {}
+
+label {}
+
+::placeholder {}
+:focus::placeholder {}
+
+/* Overall styling, e.g. vertical spacing */
+input, textarea, select, button {}
+
+/* `textarea` and `input` elements that share a similar look and similar styling
+capabilities */
+/* - common styling */
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="search"],
+input[type="url"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="time"] {}
+/* - individual styling */
+textarea {}
+input[type="text"] {}
+input[type="password"] {}
+input[type="email"] {}
+input[type="tel"] {}
+input[type="number"] {}
+input[type="search"] {}
+input[type="url"] {}
+input[type="date"] {}
+input[type="datetime-local"] {}
+input[type="month"] {}
+input[type="week"] {}
+input[type="time"] {}
+/* Tick boxes */
+input[type="checkbox"], input[type="radio"] {}
+input[type="checkbox"]:checked, input[type="radio"]:checked {}
+input[type="checkbox"] {}
+input[type="checkbox"]:checked {}
+input[type="radio"] {}
+input[type="radio"]:checked {}
+/* Other input fields, some with limited styling capabilities */
+input[type="file"] {}
+input[type="color"] {}
+input[type="range"] {}
+
+select {}
+optgroup {}
+option {}
+option:checked {}
+datalist {}
+
+button,
+input[type="submit"] {}
+button:disabled,
+input[type="submit"]:disabled {}
+button.secondary {}
+button.secondary:disabled {}
+
+/* This matches forms or form elements that are invalid *and* have been
+interacted with. Note that:
+1) You may need to add the `interacted` class to forms yourself
+2) You may need to add the `touched` class to form fields yourself
+3) `:user-invalid` is a working draft and not yet supported by most browsers
+4) `:-moz-ui-invalid` is non-standard and only works in Firefox
+Form validation error messages will appear (in capable browsers) regardless of
+this styling. You can omit 1) and 2) and still have working forms. Perfect
+example of progressive enhancement. */
+/* Applies to invalid forms */
+form.interacted:invalid {}
+/* Applies to invalid form fields. You would need to repeat your declarations
+for the following three groups of selectors individually. Browsers completely
+ignore any rule that contains a selector they do not know. */
+form.interacted :invalid, form .touched:invalid {}
+:user-invalid {}
+:-moz-ui-invalid {}
+
+output {}
+
+progress {}
+meter {}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Interactive elements
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+details {}
+details[open] {}
+summary {}
+details[open] summary {}
+
+dialog {}
+dialog::backdrop {}
+
+/* Some form fields, `details`, elements with `tabindex`, and possibly other
+elements can be focussed. You should use `:focus-visible` instead of `:focus`
+whenever possible. As the former is not yet widely supported, you need to do it
+as follows:
+1) Set styling on focus
+2) If browser supports `:focus-visible`, revert/unset the styling from 1)
+3) If the element matches `:focus-visible`, apply the styling again */
+:focus {}
+:focus:not(:focus-visible) {}
+:focus-visible {}
+
+[inert], [inert] * {}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Media queries
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+@media (prefers-reduced-motion: reduce) {
+}
+
+@media (prefers-color-scheme: dark) {
+}
+
+@media (orientation: portrait) {
+}
+
+@media (orientation: landscape) {
+}
+
+@media print {
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Gallery
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/* from
+https://www.geeksforgeeks.org/how-to-make-image-gallery-using-html-css-and-javascript/*/
+.gallery {
+    width: 90%;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 0px;
+    justify-content:center;
+    align-items: center;
+}
+
+/* Styling Particular Image */
+.gallery-img {
+    width: 200px;
+    cursor: pointer;
+}
+
+  /* Making images more responsive for smaller size device */
+  @media (max-width:700px) {
+    .gallery{
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-gap: 0px;
+    }
+    .gallery-img{
+        width: 120px;
+    }
+
+    .heading{
+        font-size: 20px;
+    }
+  }
+
+
+/* adds styling to gallery thumbnails */
+.thumbnail {
+    background: 50% 50% no-repeat; /* 50% 50% centers image in div */
+    width: 256px;
+    cursor: pointer;
+    transition: opacity 500ms ease-in;
+}
+
+/* add animation when hover a thumbnail */
+.thumbnail:hover {opacity: 0.5;}
+
+/* htmx transitions and animations*/
+.fade-in {
+  opacity: 1;
+  transition: opacity 175ms linear;
+}
+
+.fade-in.htmx-added {
+  opacity: 0;
+}
+
+.fade-out.htmx-swapping {
+  opacity: 0;
+  transition: opacity 175ms linear;
+}
+
+.htmx-settling img {
+  opacity: 0;
+}
+
+img {
+ transition: opacity 300ms ease-in;
+}
+/***** MODAL DIALOG ****/
+/***** based on htmx example ****/
+
+/* overlay inside de modal */
+/* 2 'columns' left and right */
+/* left go to previous img, right go to the next */
+/* center will download the img */
+/* overlay top is just for the name of the img*/
+.image_wrapper {
+  position: relative;
+  width:100%;
+}
+
+.overlay_top {
+    position: absolute;
+    top: 0;
+}
+
+.overlay_left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 33%;
+}
+
+.overlay_right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 33%;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+  .modal-content {
+    width: 100%;
+  }
+}
+
+#modal {
+	/* Underlay covers entire screen. */
+	position: fixed;
+	top:0px;
+	bottom: 0px;
+	left:0px;
+	right:0px;
+	background-color:rgba(0,0,0,0.5);
+	backdrop-filter: blur(2px);
+	overflow: auto;
+	z-index:1000;
+
+	/* Flexbox centers the .modal-content vertically and horizontally */
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+
+	/* Animate when opening */
+	animation-name: fadeIn;
+	animation-duration:150ms;
+	animation-timing-function: ease;
+}
+
+#modal > .modal-underlay {
+    /* underlay takes up the entire viewport. This is only
+    required if you want to click to dismiss the popup */
+    position: absolute;
+    z-index: -1;
+    top:0px;
+    bottom:0px;
+    left: 0px;
+    right: 0px;
+}
+
+#modal > .modal-content {
+    margin: auto;
+    display: flex;
+    width: 100%;
+    /* max-width: 700px; */
+
+
+	/* Animate when opening */
+	animation-name:zoomIn;
+	animation-duration:50ms;
+	animation-timing-function: ease;
+}
+
+#modal.closing {
+	/* Animate when closing */
+	animation-name: fadeOut;
+	animation-duration:150ms;
+	animation-timing-function: ease;
+}
+
+#modal.closing > .modal-content {
+	/* Animate when closing */
+	animation-name: zoomOut;
+	animation-duration:150ms;
+	animation-timing-function: ease;
+}
+
+@keyframes fadeIn {
+	0% {opacity: 0;}
+	100% {opacity: 1;}
+}
+
+@keyframes fadeOut {
+	0% {opacity: 1;}
+	100% {opacity: 0;}
+}
+
+@keyframes zoomIn {
+	0% {transform: scale(0.9);}
+	100% {transform: scale(1);}
+}
+
+@keyframes zoomOut {
+	0% {transform: scale(1);}
+	100% {transform: scale(0.9);}
+}
+
+@keyframes shake {
+  0% {
+    margin-left: 0rem;
+  }
+  25% {
+    margin-left: 0.5rem;
+  }
+  75% {
+    margin-left: -0.5rem;
+  }
+  100% {
+    margin-left: 0rem;
+  }
+}
+
+button:invalid {
+  animation: shake 0.2s ease-in-out 0s 2;
+  box-shadow: 0 0 0.6rem #ff0000;
+}
+
+/*
+This file evolved from Natural Selection:
+https://github.com/frontaid/natural-selection
+*/

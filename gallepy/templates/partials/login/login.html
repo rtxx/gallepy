@@ -1,0 +1,46 @@
+<!-- begin templates/login/login.html -->
+<div class="fade-in fade-out" id="login_page">
+<span class="red"
+      hx-get="/blank"
+      hx-trigger="click"
+      hx-target="#pages"
+      hx-swap="innerHTML swap:175ms">
+    <p align="right">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" />
+            <path d="M6 6l12 12" />
+        </svg>
+    </p>
+</span>
+<div>
+
+<span id="login_response" class="is-size-6 block"></span>
+<div class="field">
+  <label class="label">Username</label>
+  <div class="control">
+      <input class="input" form="login_form" type="text" title="username" name="username" placeholder="username" required/>
+  </div>
+</div>
+
+<div class="field">
+  <label class="label">Password</label>
+  <div class="control">
+      <input class="input" form="login_form" type="password" title="username" name="password" placeholder="password" required />
+  </div>
+</div>
+
+<div class="field is-grouped is-grouped-centered">
+    <form id="login_form"
+          hx-post="/login_request"
+          hx-target="#login_response"
+          hx-swap="innerHTML" >
+        <button type="submit" class="button is-primary">Login</button>
+    </form>
+</div>
+
+</div>
+<hr/>
+    <p></p>
+</div>
+<!-- end templates/login/login.html -->
+

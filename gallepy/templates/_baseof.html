@@ -1,0 +1,44 @@
+<!-- begin templates/_baseof.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta description="simple flask and htmx based image gallery">
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="/static/css/modern-normalize.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+	<!-- custom css for gallepy-->
+	<link rel="stylesheet" type="text/css" href="/static/css/gallepy.css" />
+    <link rel="stylesheet" type="text/css" href="/static/PhotoSwipe-5.4.2/dist/photoswipe.css">
+	<!-- HTMX with Hyperscript -->
+	<script src="https://unpkg.com/htmx.org" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/hyperscript.org" crossorigin="anonymous"></script>
+	<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+	<title>gallepy</title>
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            {% include "partials/navbar/navbar.html" %}
+        </div>
+    </section>
+    <section class="section">
+        <div class="container box">
+            {% block main %}
+            {% endblock main %}
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <p align="center">gallepy</p>
+            <p align="right"><a href="#">Back to top ⬆</a></p>
+        </div>
+    </section>
+</body>
+</html>
+<!-- end templates/_baseof.html -->
+
+
+

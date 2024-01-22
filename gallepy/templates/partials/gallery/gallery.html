@@ -1,0 +1,66 @@
+<script type="module">
+    import PhotoSwipeLightbox from '/static/PhotoSwipe-5.4.2/dist/photoswipe-lightbox.esm.js';
+    const lightbox = new PhotoSwipeLightbox({
+      gallery: '#gallery',
+      children: 'a',
+      pswpModule: () => import('/static/PhotoSwipe-5.4.2/dist/photoswipe.esm.js'),
+      preloaderDelay: 0
+    });
+    lightbox.init();
+</script>
+<div class="gallery" id="gallery">
+    {% if image_array == []  %}
+        <div class="content">
+        No images available.
+        </div>
+    {% endif %}
+    {% for image in image_array %}
+        <a class="gallery-img" href="{{image.thumbnail}}"
+           hx-get="/image/thumbnail/{{image.number}}"
+           hx-trigger="revealed"
+           hx-target="this"
+           hx-swap="outerHTML"
+           data-pswp-width="{{image.w}}"
+           data-pswp-height="{{image.h}}"
+           target="_blank">
+            <img class="htmx-indicator thumbnail" alt="loading {{image.name}}"
+                 src="{{ url_for('static', filename='loading_bars.svg') }}"
+                 width="256">
+        </a>
+    {% endfor %}
+
+
+
+</div>
+
+
+<!--
+<div class="pswp-gallery pswp-gallery" id="my-gallery">
+    <a href="https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-2500.jpg"
+        data-pswp-width="1669"
+        data-pswp-height="2500"
+        target="_blank">
+        <img src="https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-200.jpg" alt="" />
+    </a>
+</div>
+-->
+<!--
+<div id="gallery" class="gallery fade-in" >
+    {% if image_array == []  %}
+        <div class="content">
+        No images available.
+        </div>
+    {% endif %}
+    {% for image in image_array %}
+        <div class="gallery-img" href=""
+             hx-get="/image/thumbnail/{{image.number}}"
+             hx-trigger="revealed"
+             hx-target="this"
+             hx-swap="outerHTML">
+            <img class="htmx-indicator thumbnail" alt="loading {{image.name}}"
+                 src="{{ url_for('static', filename='loading_bars.svg') }}"
+                 width="256">
+        </div>
+    {% endfor %}
+</div>
+-->

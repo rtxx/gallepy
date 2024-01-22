@@ -1,0 +1,62 @@
+<div class="box">
+  <div class="columns is-mobile is-multiline is-centered">
+    <div class="column">
+      <label class="label">Album</label>
+      <div class="field is-grouped">
+        <div class="control">
+          <div class="select" >
+            <select form="filter_form" name="filterOptions" >
+              {% for album in user.albuns %}
+              <option hx-get="/gallery/{{album}}"
+                      hx-trigger="click"
+                      hx-target="#gallery"
+                      hx-swap="outerHTML swap:175ms" value="{{album}}">{{album}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="control">
+          <form id="filter_form"
+                hx-post="/gallery/filter"
+                hx-target="#gallery"
+                hx-swap="outerHTML swap:175ms" >
+            <button type="submit" class="button is-link">Filter</button>
+          </form>
+        </div>
+        <div class="control">
+          <a hx-get="/gallery"
+             hx-target="#gallery"
+             hx-swap="outerHTML swap:175ms" >
+            <button type="submit" class="button is-outlined">Clear</button>
+          </a>
+        </div>
+      </div>
+      <p class="help">Click to filter by album.</p>
+    </div>
+
+    <div class="column">
+      <fieldset disabled>
+        <div class="field">
+          <label class="label">Download</label>
+          <div class="control">
+            <div class="select">
+              <select>
+                <option hx-get="/gallery"
+                        hx-trigger="click"
+                        hx-target="#gallery"
+                        hx-swap="outerHTML swap:175ms">All photos</option>
+                {% for album in user.albuns %}
+                <option hx-get="/gallery/{{album}}"
+                        hx-trigger="click"
+                        hx-target="#gallery"
+                        hx-swap="outerHTML swap:175ms">{{album}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <p class="help">Click to download by album.</p>
+        </div>
+    </div>
+    </fieldset>
+  </div>
+</div>

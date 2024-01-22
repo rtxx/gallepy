@@ -1,0 +1,67 @@
+<!-- begin templates/backoffice/backoffice.html -->
+<div class="fade-in fade-out" id="backoffice_page">
+    <span class="red"
+          hx-get="/blank"
+          hx-trigger="click"
+          hx-target="#pages"
+        hx-swap="innerHTML swap:175ms">
+        <p align="right">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" />
+                <path d="M6 6l12 12" />
+            </svg>
+        </p>
+    </span>
+
+    <div class="columns">
+  <div class="column">
+    <h1 class="title"><p>Hello!</h1>
+    <h2 class="subtitle"><bold>{{user.name}}</bold></p></h2>
+     <div class="">
+      <div class="field">
+        <div class="control">
+          <a class="button is-light"
+             hx-get="/logout"
+             hx-trigger="click"
+             hx-target="#pages"
+             hx-swap="innerHTML swap:175ms">
+              Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="column">
+      <div class="content">
+        You have acess to these albuns:
+          <ul>
+              {% for album in user.albuns %}
+              <li>{{album}}</li>
+              {% endfor %}
+          </ul>
+      </div>
+  </div>
+</div>
+
+<div class="tabs" id="tabs" hx-target="#tab-contents" role="tablist"
+ hx-on:htmx-after-on-load="let currentTab = document.querySelector('[aria-selected=true]');
+                           currentTab.setAttribute('aria-selected', 'false')
+                           currentTab.classList.remove('is-active')
+                           let newTab = event.target
+                           newTab.setAttribute('aria-selected', 'true')
+                           newTab.classList.add('is-active')">
+    <ul>
+        <li class="is-active" role="tab" aria-controls="tab-content" aria-selected="true" hx-get="/backoffice/gallery">
+            <a>Gallery</a>
+        </li>
+        <li role="tab" aria-controls="tab-content" aria-selected="false" hx-get="/backoffice/settings">
+            <a>Settings</a>
+        </li>
+    </ul>
+</div>
+
+<div id="tab-contents" role="tabpanel" hx-get="/backoffice/gallery" hx-trigger="load"></div>
+</div>
+<hr/>
+<!-- end templates/backoffice/backoffice.html -->
+
