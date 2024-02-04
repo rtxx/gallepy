@@ -1,0 +1,32 @@
+<!-- begin errors/error.html -->
+<div class="fade-in fade-out" id="about_page">
+<span class="is-danger"
+      hx-get="/blank"
+      hx-trigger="click"
+      hx-target="#pages"
+      hx-swap="innerHTML swap:175ms">
+    <p align="right">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" />
+            <path d="M6 6l12 12" />
+        </svg>
+    </p>
+</span>
+    <div class="content">
+      <div class="has-text-centered">
+        <h1 class="is-size-1 has-text-weight-bold has-text-primary">{{error}}</h1>
+        <p class="is-size-5 has-text-weight-medium"> <span class="has-text-danger">Ohh no!</span> Something went wrong...</p>
+        <p class="is-size-6 mb-2">
+            {{error_desc}}
+        </p>
+        <a href="/" class="button is-primary">Refresh page</a>
+      </div>
+    </div>
+    </div>
+
+    <hr/>
+
+</div>
+
+<!-- end errors/error.html -->
+

@@ -3,19 +3,19 @@
   <label class="label">Administration</label>
   <!-- create new user form -->
   <div class="box">
-    <fieldset disabled>
+    <fieldset>
       <label class="label">Create new user</label>
       <div class="field">
         <label class="label">Name</label>
         <div class="control">
-          <input class="input" type="text" placeholder="Fullname">
+          <input class="input" type="text" form="create_new_user_form" placeholder="Fullname" title="user" name="new_user" required>
         </div>
       </div>
 
       <div class="field">
         <label class="label">Username</label>
         <div class="control">
-          <input class="input" type="text" placeholder="Username">
+          <input class="input" type="text" form="create_new_user_form" placeholder="Username" title="username" name="new_username" required>
         </div>
         <p class="help"></p>
       </div>
@@ -23,27 +23,25 @@
       <div class="field">
         <label class="label">Password</label>
         <div class="control">
-          <input class="input" type="password" placeholder="Password" >
+          <input class="input" type="password" form="create_new_user_form" placeholder="Password" title="password" name="new_password" id="new_password" required>
         </div>
         <p class="help"></p>
+        <label class="checkbox">
+          <input type="checkbox" _="on click if #new_password's [@type] match 'password' then
+                                              set #new_password's [@type] to 'text'
+                                          else
+                                              set #new_password's [@type] to 'password'" >
+          Show password
+      </label>
       </div>
-
-      <div class="field">
-        <label class="label">Albuns</label>
-        <div class="control">
-          <div class="select">
-            <select>
-              <option>Select dropdown</option>
-              <option>With options</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
       <div class="field is-grouped">
-        <div class="control">
-          <button class="button is-link">Submit</button>
-        </div>
+        <form id="create_new_user_form"
+              hx-post="/backoffice/settings/create_new_user"
+              hx-target="this"
+              hx-swap="innerHTML" >
+            <button class="button is-link" id="create_new_user_form_submit_button" type="submit"
+              _="on click add .is-static .is-loading ">Create</button>
+        </form>
       </div>
       <p class="help">You can create a new user with this form.</p>
     </fieldset>
@@ -51,34 +49,54 @@
 
   <!-- update albuns permissions -->
   <div class="box">
-    <fieldset disabled>
+
+
+    <fieldset>
       <label class="label">Update album permissions</label>
       <div class="field">
         <label class="label">Username</label>
         <div class="control">
-          <input class="input" type="text" placeholder="Username">
+          <input class="input" type="text" form="update_permissions_form" name="update_permissions_form_username" placeholder="Username">
         </div>
         <p class="help"></p>
       </div>
 
-      <div class="field">
-        <label class="label">Albuns</label>
+      <div class="field ">
+        <label class="label">Album</label>
+        <div class="select">
+          <select hx-get="/backoffice/settings/update_album_permissions/album_select"
+                hx-target="this"
+                hx-swap="outerHTML"
+                hx-trigger="revealed">
+            <option>Album</option>
+            <option></option>
+          </select>
+        </div>
+
+        <label class="label">Granted</label>
         <div class="control">
-          <div class="select">
-            <select>
-              <option>Select dropdown</option>
-              <option>With options</option>
-            </select>
-          </div>
+          <label class="radio">
+            <input type="radio" form="update_permissions_form" name="update_permissions_form_granted" value="TRUE" >
+            Yes
+          </label>
+          <label class="radio">
+            <input type="radio" form="update_permissions_form" name="update_permissions_form_granted" value="FALSE" checked="checked">
+            No
+          </label>
         </div>
       </div>
 
       <div class="field is-grouped">
-        <div class="control">
-          <button class="button is-link">Submit</button>
-        </div>
+        <form id="update_permissions_form"
+              hx-post="/backoffice/settings/update_album_permissions"
+              hx-target="this"
+              hx-swap="innerHTML" >
+            <button class="button is-link" id="update_permissions_form_submit_button" type="submit"
+              _="on click add .is-static .is-loading ">Update</button>
+        </form>
       </div>
       <p class="help">You can update album permissions per user with this form.</p>
+
     </fieldset>
   </div>
 </div>
@@ -86,32 +104,38 @@
 
 <!-- change password form -->
 <div class="box">
-  <fieldset disabled>
+  <fieldset>
     <label class="label">Update password</label>
     <div class="field">
       <div class="control">
-        <input class="input" type="password" placeholder="Current password">
+        <input class="input" type="password" form="change_password_form" title="current_password" name="current_password" placeholder="Current password" required >
       </div>
     </div>
 
     <div class="field">
       <div class="control">
-        <input class="input" type="password" placeholder="New password">
+        <input class="input" type="password" form="change_password_form" title="new_password" name="new_password" placeholder="New password" required >
       </div>
       <p class="help"></p>
     </div>
 
     <div class="field">
       <div class="control">
-        <input class="input" type="password" placeholder="Confirm new password" >
+        <input class="input" type="password" form="change_password_form" title="new_new_password" name="new_new_password" placeholder="Confirm new password" required >
       </div>
       <p class="help"></p>
     </div>
 
     <div class="field is-grouped">
-      <div class="control">
-        <button class="button is-link">Submit</button>
-      </div>
+
+      <form id="change_password_form"
+            hx-post="/backoffice/settings/change_password"
+            hx-target="this"
+            hx-swap="innerHTML" >
+          <button class="button is-link" id="change_password_form_submit_button" type="submit"
+            _="on click add .is-static .is-loading ">Update Password</button>
+      </form>
+
     </div>
     <p class="help">You can change the password with this form.</p>
   </fieldset>

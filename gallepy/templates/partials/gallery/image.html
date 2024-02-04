@@ -1,12 +1,8 @@
-<a class="gallery-img" href="{{image.path}}"
-     hx-get="/image/full/{{image.number}}"
-     hx-trigger="click"
-     hx-target="body"
-     hx-swap="beforeend"
-        data-pswp-width="{{image.w}}"
-        data-pswp-height="{{image.h}}"
-        target="_blank">
-    <img class="thumbnail" alt="{{image.name}}"
-         src="{{image.thumbnail}}"
-         width="256">
+<a class="gallery-img" href="{{image.image_path}}"
+   data-pswp-width="{{image.image_width}}"
+   data-pswp-height="{{image.image_height}}"
+   target="_blank">
+   <img class="thumbnail" alt="{{image.name}}"
+        src="{{image.thumbnail_path}}"
+        width="256">
 </a>

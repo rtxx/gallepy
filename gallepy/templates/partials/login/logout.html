@@ -1,6 +1,6 @@
 <!-- begin templates/login/logout.html -->
 <div class="fade-in fade-out" id="login_page">
-<span class="red"
+<span class="has-text-danger"
       hx-get="/blank"
       hx-trigger="click"
       hx-target="#pages"
@@ -13,8 +13,9 @@
     </p>
 </span>
 <div>
-    <div class="notification">
-    <p>Logout sucessful! Have a nice day, <bold>{{username}}</bold>!</p>
+    <div class="notification fade-in fade-out" id="login_notification" _="">
+        <button class="delete" _="on click remove #login_page"></button>
+    <p>Logout successful! Have a nice day!</p>
     </div>
 
     <div hx-trigger="log from:body" hx-get="/gallery" hx-target="#gallery" ></div>

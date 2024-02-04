@@ -1,6 +1,6 @@
 <!-- begin templates/login/login.html -->
 <div class="fade-in fade-out" id="login_page">
-<span class="red"
+<span class="has-text-danger"
       hx-get="/blank"
       hx-trigger="click"
       hx-target="#pages"
@@ -18,15 +18,24 @@
 <div class="field">
   <label class="label">Username</label>
   <div class="control">
-      <input class="input" form="login_form" type="text" title="username" name="username" placeholder="username" required/>
+      <input _="on click remove .is-danger .error from #login_submit_button
+                then remove #login_notification" class="input" form="login_form" type="text" title="username" name="username" placeholder="username" required/>
   </div>
 </div>
 
 <div class="field">
   <label class="label">Password</label>
   <div class="control">
-      <input class="input" form="login_form" type="password" title="username" name="password" placeholder="password" required />
+      <input _="on click remove .is-danger .error from #login_submit_button
+                then remove #login_notification" class="input" form="login_form" id="password" type="password" title="username" name="password" placeholder="password" required />
   </div>
+  <label class="checkbox">
+  <input type="checkbox" _="on click if #password's [@type] match 'password' then
+                                        set #password's [@type] to 'text'
+                                    else
+                                        set #password's [@type] to 'password'" >
+  Show password
+  </label>
 </div>
 
 <div class="field is-grouped is-grouped-centered">
@@ -34,7 +43,10 @@
           hx-post="/login_request"
           hx-target="#login_response"
           hx-swap="innerHTML" >
-        <button type="submit" class="button is-primary">Login</button>
+        <button class="button is-primary" id="login_submit_button" type="submit"
+                _="on click add .is-static .is-loading
+                   then remove .is-danger .error from #login_submit_button
+                   then remove #login_notification">Login</button>
     </form>
 </div>
 

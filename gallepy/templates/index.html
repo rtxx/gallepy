@@ -18,6 +18,12 @@
      hx-swap="outerHTML settle:175ms">
 </div>
 
+<div hx-trigger="logout from:body"
+     hx-get="/navbar"
+     hx-target="#navbar"
+     hx-swap="innerHTML">
+</div>
+
 <div hx-trigger="login from:body"
      hx-get="/gallery"
      hx-target="#gallery"
@@ -30,6 +36,11 @@
      hx-swap="innerHTML">
 </div>
 
+<div hx-trigger="login from:body"
+     hx-get="/navbar"
+     hx-target="#navbar"
+     hx-swap="innerHTML">
+</div>
 
 
 <!-- end templates/index.html -->

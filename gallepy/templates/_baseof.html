@@ -9,21 +9,33 @@
 	<!-- CSS -->
 	<link rel="stylesheet" type="text/css" href="/static/css/modern-normalize.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-	<!-- custom css for gallepy-->
+	<!-- custom css for gallepy -->
 	<link rel="stylesheet" type="text/css" href="/static/css/gallepy.css" />
-    <link rel="stylesheet" type="text/css" href="/static/PhotoSwipe-5.4.2/dist/photoswipe.css">
 	<!-- HTMX with Hyperscript -->
 	<script src="https://unpkg.com/htmx.org" crossorigin="anonymous"></script>
 	<script src="https://unpkg.com/hyperscript.org" crossorigin="anonymous"></script>
+    <!-- PhotoSwipe -->
+    <link rel="stylesheet" type="text/css" href="/static/PhotoSwipe-5.4.2/dist/photoswipe.css">
 	<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 	<title>gallepy</title>
 </head>
 <body>
-    <section class="section">
-        <div class="container">
+    <section class="section" >
+        <div class="container" id="navbar">
             {% include "partials/navbar/navbar.html" %}
         </div>
     </section>
+
+    <!--
+    <section class="section">
+      {% for message in get_flashed_messages() %}
+        <div class="notification">
+            <button class="delete" _="on click remove #login_notification"></button>
+            {{ message }}
+        </div>
+      {% endfor %}
+    </section>-->
+
     <section class="section">
         <div class="container box">
             {% block main %}
@@ -32,10 +44,16 @@
     </section>
     <section class="section">
         <div class="container">
-            <p align="center">gallepy</p>
-            <p align="right"><a href="#">Back to top ⬆</a></p>
+
+	    <p align="right"> <button class="button is-info" align="right" _="on click go to the top of the body smoothly">Back to top</button></p>
+	    <hr/>
+	    <p align="center">gallepy - <a href="https://github.com/rtxx/gallepy">v0.2</a></p>
+        <p align="center">Made with <a href="https://python.org">python</a>, <a href="https://htmx.org">htmx</a>, <a href="https://hyperscript.org">hyperscript</a> and ❤️</p>
+	    <!--<p align="right"><a href="#">Back to top ⬆</a></p> -->
         </div>
+
     </section>
+
 </body>
 </html>
 <!-- end templates/_baseof.html -->

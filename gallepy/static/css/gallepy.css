@@ -361,6 +361,13 @@ https://www.geeksforgeeks.org/how-to-make-image-gallery-using-html-css-and-javas
 /* add animation when hover a thumbnail */
 .thumbnail:hover {opacity: 0.5;}
 
+/* https://stackoverflow.com/a/70796187 */
+.top-of-the-world{
+    position: absolute !important;
+    z-index: 100 !important;
+    width: 90%;
+}
+
 /* htmx transitions and animations*/
 .fade-in {
   opacity: 1;
@@ -383,107 +390,21 @@ https://www.geeksforgeeks.org/how-to-make-image-gallery-using-html-css-and-javas
 img {
  transition: opacity 300ms ease-in;
 }
-/***** MODAL DIALOG ****/
-/***** based on htmx example ****/
 
-/* overlay inside de modal */
-/* 2 'columns' left and right */
-/* left go to previous img, right go to the next */
-/* center will download the img */
-/* overlay top is just for the name of the img*/
-.image_wrapper {
-  position: relative;
-  width:100%;
-}
-
-.overlay_top {
-    position: absolute;
-    top: 0;
-}
-
-.overlay_left {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 33%;
-}
-
-.overlay_right {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 33%;
-}
-
-/* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 700px){
-  .modal-content {
-    width: 100%;
-  }
-}
-
-#modal {
-	/* Underlay covers entire screen. */
-	position: fixed;
-	top:0px;
-	bottom: 0px;
-	left:0px;
-	right:0px;
-	background-color:rgba(0,0,0,0.5);
-	backdrop-filter: blur(2px);
-	overflow: auto;
-	z-index:1000;
-
-	/* Flexbox centers the .modal-content vertically and horizontally */
-	display:flex;
-	flex-direction:column;
-	align-items:center;
-
-	/* Animate when opening */
-	animation-name: fadeIn;
-	animation-duration:150ms;
-	animation-timing-function: ease;
-}
-
-#modal > .modal-underlay {
-    /* underlay takes up the entire viewport. This is only
-    required if you want to click to dismiss the popup */
-    position: absolute;
-    z-index: -1;
-    top:0px;
-    bottom:0px;
-    left: 0px;
-    right: 0px;
-}
-
-#modal > .modal-content {
-    margin: auto;
-    display: flex;
-    width: 100%;
-    /* max-width: 700px; */
-
-
-	/* Animate when opening */
-	animation-name:zoomIn;
-	animation-duration:50ms;
-	animation-timing-function: ease;
-}
-
-#modal.closing {
+.closing {
 	/* Animate when closing */
 	animation-name: fadeOut;
 	animation-duration:150ms;
 	animation-timing-function: ease;
 }
 
-#modal.closing > .modal-content {
-	/* Animate when closing */
-	animation-name: zoomOut;
-	animation-duration:150ms;
+.error {
+	/* Animate when error */
+	animation-name: shake;
+	animation-duration:200ms;
 	animation-timing-function: ease;
 }
+
 
 @keyframes fadeIn {
 	0% {opacity: 0;}
@@ -510,19 +431,14 @@ img {
     margin-left: 0rem;
   }
   25% {
-    margin-left: 0.5rem;
+    margin-left: 1.5rem;
   }
   75% {
-    margin-left: -0.5rem;
+    margin-left: -1.5rem;
   }
   100% {
     margin-left: 0rem;
   }
-}
-
-button:invalid {
-  animation: shake 0.2s ease-in-out 0s 2;
-  box-shadow: 0 0 0.6rem #ff0000;
 }
 
 /*

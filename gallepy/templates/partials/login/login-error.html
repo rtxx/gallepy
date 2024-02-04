@@ -1,4 +1,11 @@
-<div class="box notification is-danger">
+<div class="notification is-danger fade-in fade-out top-of-the-world" id="login_notification" _="on load add .error .is-danger to #login_submit_button
+                                                              then remove .is-loading .is-static from #login_submit_button
+                                                              then wait 2s then remove me then remove .is-danger .error from #login_submit_button
+                                                              then wait for animationend
+                                                              ">
+    <button class="delete" _="on click remove .is-danger .error from #login_submit_button
+                              then remove #login_notification"></button>
     {{error_type}}
 </div>
 <p class="block"></p>
+

@@ -4,16 +4,17 @@
       <img src="/static/favicon.ico" height="28">
     </a>
 
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+        _="on click toggle .is-active on me
+           then toggle .is-active on #navbarMain">
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
     </a>
   </div>
 
-  <div id="navbarBasicExample" class="navbar-menu">
+  <div id="navbarMain" class="navbar-menu">
     <div class="navbar-start">
-
       <a id="btn_about" class="navbar-item"
          href=""
          hx-get="/about"
@@ -30,37 +31,23 @@
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
-            <a id="btn_login" class="button is-primary"
-             href=""
-             align="right"
-             hx-get="/login"
-             hx-trigger="click"
-             hx-target="#pages"
-             hx-swap="innerHTML settle:175ms">Menu</a>
+            {% if g.user %}
+              <a id="btn_menu" class="button is-info"
+                 hx-trigger="click"
+                 hx-get="/backoffice"
+                 hx-target="#pages"
+                 hx-swap="innerHTML">{{g.user["username"]}}</a>
+            {% else %}
+              <a id="btn_login" class="button is-primary"
+               href=""
+               align="right"
+               hx-get="/login"
+               hx-trigger="click"
+               hx-target="#pages"
+               hx-swap="innerHTML settle:175ms">Login</a>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
 </nav>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-
-  // Get all "navbar-burger" elements
-  const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-
-  // Add a click event on each of them
-  $navbarBurgers.forEach( el => {
-    el.addEventListener('click', () => {
-
-      // Get the target from the "data-target" attribute
-      const target = el.dataset.target;
-      const $target = document.getElementById(target);
-
-      // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-      el.classList.toggle('is-active');
-      $target.classList.toggle('is-active');
-    });
-  });
-});
-</script>

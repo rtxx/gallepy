@@ -1,110 +1,67 @@
-from flask import Blueprint
-from PIL import Image, ImageOps
-import os, bcrypt
-# import sqlite3 as db
-from .configs import *
-bp = Blueprint('db', __name__)
+import bcrypt
+import click
+import secrets
+import sqlite3
+from flask import current_app, g
+from . import LOG
 
 
-class GalleryImage:
-    number = -1
-
-    def __init__(self, name, path, album, thumbnail):
-        GalleryImage.number += 1
-        self.number = GalleryImage.number
-        self.name = name
-        self.path = path
-        self.thumbnail = thumbnail
-        self.w = 1  # random.randrange(128,512)
-        self.h = 1  # random.randrange(128,512)
-        self.album = album or "private"
+def init_app(app):
+    app.teardown_appcontext(close_db)
+    app.cli.add_command(init_db_command)
 
 
-class User:
-    id = -1
+@click.command('init-db')
+def init_db_command():
+    """Clear the existing data and create new tables."""
+    init_db()
+    LOG.info("DB initialized")
 
-    def __init__(self, name, username, hashed_password, salt, type, albuns):
-        User.id += 1
-        self.id = User.id
-        self.name = name
-        self.username = username
-        self.hashed_password = hashed_password
-        self.salt = salt
-        self.type = type
-        self.albuns = albuns or ["public"]
+    # https://stackoverflow.com/a/61471228
+    # creating new admin with random password
+    db = get_db()
 
-
-def init_users_db():
-    users = []
-
-    password = "admin1234"
+    admin_name = "Administrator"
+    admin_username = "admin"
+    password_length = 14
+    password = secrets.token_urlsafe(password_length)
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-    user = User("admininistrator",
-                "admin",
-                hashed_password,
-                salt,
-                "admin",
-                ["public","album1","album2","album3"]
-                )
-    users.append(user)
 
-    password = "rui1234"
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-    user = User("user account",
-                "user",
-                hashed_password,
-                salt,
-                "user",
-                ["public","album1"]
-                )
-    users.append(user)
-    return users
+    try:
+        db.execute(
+            "INSERT INTO USERS (NAME,USERNAME,HASHED_PASSWORD,TYPE) VALUES (?, ?, ?, ?)",
+            (admin_name, admin_username, hashed_password, "admin"),
+        )
+        db.commit()
+        LOG.info(f"Admin created: {admin_username} / {password}")
+    except db.IntegrityError:
+        # this will never be reached,*I think*
+        LOG.info = f"{admin_name} is already registered."
+    LOG.info = "Done!"
+    return
 
 
-# init dummy dd
-def init_images_db():
+def init_db():
+    db = get_db()
 
-    imgs = []
-    print(f"Searching '{GALLERY_PATH}' for images...")
-    for file in os.listdir(GALLERY_PATH):
-        current_file = f"{GALLERY_PATH}/{file}"
-        if os.path.isfile(current_file):
-            ext = os.path.splitext(current_file)[-1].lower()
-            if ext == ".jpg" or ext == ".jpeg" or ext == ".png":
-                #current_img_thumbnail = f"{THUMBNAILS_PATH}/{file}"
-                image = GalleryImage(file,
-                                     f"{RELATIVE_GALLERY_PATH}/{file}",
-                                     "public",
-                                     f"{RELATIVE_THUMBNAILS_PATH}/{file}")
-                temp = Image.open(f"{GALLERY_PATH}/{file}")
-                image.w = temp.width
-                image.h = temp.height
-                del temp
-                imgs.append(image)
-                print(f"{image.name} : image added to 'db' as public")
-            else:
-                print(f"[ERROR] {current_file} : file is not a image, ignoring...")
-        else:
-            print(f"Album found - {current_file}")
-            album_gallery_path = f"{GALLERY_PATH}/{file}"
-            for album_img in os.listdir(album_gallery_path):
-                #current_thumbnail_img = f"{THUMBNAILS_PATH}/{file}/{album_img}"
-                current_gallery_img = f"{GALLERY_PATH}/{file}/{album_img}"
-                ext = os.path.splitext(current_gallery_img)[-1].lower()
-                if ext == ".jpg" or ext == ".jpeg" or ext == ".png":
-                    image = GalleryImage(album_img,
-                                         f"{RELATIVE_GALLERY_PATH}/{file}/{album_img}",
-                                         file,
-                                         f"{RELATIVE_THUMBNAILS_PATH}/{file}/{album_img}")
-                    temp = Image.open(f"{GALLERY_PATH}/{file}/{album_img}")
-                    image.w = temp.width
-                    image.h = temp.height
-                    del temp
-                    imgs.append(image)
-                    print(f"{image.name} : image added to 'db' as {file}")
-                else:
-                    print(f"[ERROR] {current_gallery_img} : file is not a image, ignoring...")
+    with current_app.open_resource('schema.sql') as f:
+        db.executescript(f.read().decode('utf8'))
 
-    return imgs
+
+def get_db():
+    if 'db' not in g:
+        g.db = sqlite3.connect(
+            current_app.config['DATABASE'],
+            detect_types=sqlite3.PARSE_DECLTYPES
+        )
+        g.db.row_factory = sqlite3.Row
+
+    return g.db
+
+
+def close_db(e=None):
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()

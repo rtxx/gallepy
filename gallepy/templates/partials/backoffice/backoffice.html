@@ -1,6 +1,6 @@
 <!-- begin templates/backoffice/backoffice.html -->
 <div class="fade-in fade-out" id="backoffice_page">
-    <span class="red"
+    <span class="has-text-danger"
           hx-get="/blank"
           hx-trigger="click"
           hx-target="#pages"
@@ -33,12 +33,14 @@
   </div>
   <div class="column">
       <div class="content">
+      <!--
         You have acess to these albuns:
           <ul>
               {% for album in user.albuns %}
               <li>{{album}}</li>
               {% endfor %}
           </ul>
+         -->
       </div>
   </div>
 </div>

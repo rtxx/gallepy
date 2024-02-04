@@ -16,16 +16,18 @@ It has some features, like:
 - Made with [Bulma CSS](https://bulma.io/)
 
 Check [here](https://photos.ruiteixeira.me) to see in action.
-![Main Page](https://cloud.ducknexus.com/s/bfYLqRaBpFdZnXx/download/gallepy1.png)![User page](https://cloud.ducknexus.com/s/XDbnjsLGy422erW/download/gallepy3.png)
+![Main Page](https://cloud.ducknexus.com/s/bfYLqRaBpFdZnXx/download/gallepy1.png)
+![User page](https://cloud.ducknexus.com/s/XDbnjsLGy422erW/download/gallepy3.png)
 ## Python requirments
 
 - flask
 - pillow
 - bcrypt
-- sqlite3
 
 Optional but **recommended**:
 - gunicorn
+
+> For convenience, there is a ```requirements.txt```
 
 ## How to use it
 
@@ -42,13 +44,27 @@ gallepy/static/images/gallery
 ```
 > If you need to create albuns, they are just subfolders of ```gallepy/static/images/gallery```
 
-- Then generate the thumbnails: 
+- Init the database: 
 ```
 cd [root of the git folder]
-flask --app gallepy init-thumbnails
+flask --app gallepy init-db
+```
+> Make sure the get the admin login, otherwise you will need to ```init-db``` again
+
+- Generate the thumbnails: 
+```
+cd [root of the git folder]
+flask --app gallepy make-thumbnails
 ```
 
-- Finally run it:
+- Make the gallery: 
+```
+cd [root of the git folder]
+flask --app gallepy make-gallery
+```
+> After adding or removing images from the gallery folder, use this command to refresh the database
+
+- Run it:
 ```
 cd [root of the git folder]
 bash start_server.sh
@@ -62,12 +78,8 @@ flask --app gallepy run --host=0.0.0.0
 
 - You can now go to ```localhost:5000```
 
-> The default login is ```admin/admin1234``` and ```user/user1234```
 
-## Create users
-> Attention! This is a WIP feature and it's in pre-alpha quality if you can even call it that.
+## Creating users and adding permissions to them
 
-- Go to ```gallepy/db.py``` and create your new users by adding them on the ```init_users_db()``` function
-- Remember that you need to define the albuns that the new user can view. To do that, just specify the name of the album
-
+Login to with the admin user and go the settings tab
 
