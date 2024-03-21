@@ -1,7 +1,9 @@
 # gallepy - simple gallery made with python
 # major source is from https://flask.palletsprojects.com/en/3.0.x/tutorial/
+import os
 from flask import Flask, render_template
 from .config import LOG
+from .db import init_db_command
 
 
 def create_app():

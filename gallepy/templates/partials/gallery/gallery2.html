@@ -1,0 +1,90 @@
+<div class="columns body-columns" id="gallery">
+    <div class="column is-half is-offset-one-quarter">
+    {% if image_list == []  %}
+        <div class="content">
+        No images available.
+        </div>
+    {% endif %}
+    {% for image in image_list %}
+        <div class="block">
+            <div class="box card">
+            <div class="header">
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img src="{{ url_for('static', filename='favicon.ico') }}" alt="small placeholder image">
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <p class="title is-6">{{image.name}}</p>
+                        <p class="subtitle is-6">@{{image.album}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-image">
+                <figure class="image is-4by3">
+                    <a class="gallery-img" href="{{image.image_path}}"
+                       hx-get="/image/thumbnail2/{{image.id}}"
+                       hx-trigger="revealed"
+                       hx-target="this"
+                       hx-swap="outerHTML"
+                       data-pswp-width="{{image.image_width}}"
+                       data-pswp-height="{{image.image_height}}"
+                       target="_blank">
+                        <img class="thumbnail htmx-indicator" alt="loading {{image.name}}"
+                             src="{{ url_for('static', filename='loading_bars.svg') }}"
+                             width="256">
+                    </a>
+
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="level is-mobile">
+                    <div class="level-left">
+                        <!--
+                        <div class="level-item has-text-centered">
+
+                            <a href="">
+                                <i class="material-icons">favorite_border</i>
+                            </a>
+                        </div>
+                        <div class="level-item has-text-centered">
+                            <div>
+                                <a href="">
+                                    <i class="material-icons">chat_bubble_outline</i>
+                                </a>
+                            </div>
+                        </div>
+                        -->
+                    </div>
+                </div>
+
+                <div class="content">
+                    <!--
+                    <p>
+                        <strong>32 Likes</strong>
+                    </p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+                    <a>@bulmaio</a>.
+                    <a href="#">#css</a>
+                    <a href="#">#responsive</a>
+                    <br>
+                    <time datetime="2018-1-1">11:09 PM - 1 Jan 2023</time>
+                    -->
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="columns is-mobile">
+                    <div class="column is-11">
+
+                    </div>
+                    <div class="column has-text-centered">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    {% endfor %}
+  </div>  
+</div>

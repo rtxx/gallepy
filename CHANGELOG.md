@@ -1,3 +1,17 @@
+## [0.2.1] - 2024-03-21
+
+
+### Added
+- Added new experimental 'Instagram' alike view
+- ```make-thumbnails``` , ```make-gallery``` can now be done via the settings page
+- New command ```check-db```: Makes a check if database exists, if not creates a new one. Useful for running in a script.
+  - For example: flask --app gallepy checkdb && gunicorn ... 
+
+### Changed
+- Filter by album is working again
+- ```start_server.sh``` was changed to check if database is present or not nad added a bigger timeout to gunicorn
+- Cleaned some code
+
 ## [0.2] - 2024-02-04
 
 There is **alot** of changes on this release, beginning with a major restructure of the code, including a *proper* database system for the users and new commands.
@@ -12,7 +26,7 @@ The code still makes an italian person blush with all the spaghetti, but it's be
     - Stores users data
     - Stores users permission data
 
-- New file```config.py```: It has some useful configurations, like databse path and such
+- New file```config.py```: It has some useful configurations, like database path and such
 - New file```gallery.py```: Functions relating to the gallery, like ```make-gallery```
 - New command ```init-db```: Initializes the database with a new admin account
 - New command ```make-thumbnails```: Makes thumbnails for the images
@@ -38,7 +52,7 @@ The code still makes an italian person blush with all the spaghetti, but it's be
 
 ### Deleted
 
-- Command ```init-thumbnails``` is no longer avaiable
+- Command ```init-thumbnails``` is no longer available
 - File```configs.py``` is no longer available, it is now renamed ```config.py```
 - Template partials ```image.full image-full-html image-full-modal``` are no longer available
 
@@ -47,7 +61,7 @@ The code still makes an italian person blush with all the spaghetti, but it's be
 - On user creation, existing users are not checked so be careful with duplicates
 - Filter by album is not working
 - Login form notification is off-center
-- If new images are added, ```make-gallery``` is needed to load them this is will result in deleting the user permissions table. Its annoying but in the future will fix this
+- If new images are added, ```make-gallery``` is needed to load them this is will result in deleting the user permissions table. It's annoying but in the future will fix this
 
 ## [0.1.1-UNRELEASED] - 2024
 

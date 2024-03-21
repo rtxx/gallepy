@@ -1,7 +1,9 @@
-import functools, bcrypt
+import bcrypt
+import functools
 from flask import Blueprint, render_template, render_template_string, g, session, request, make_response, send_file, current_app
 from .db import get_db
 from . import LOG
+from .gallery import make_thumbnails, make_gallery, update_album_permissions_table, init_album_table
 
 bp = Blueprint('main', __name__)
 
@@ -46,11 +48,26 @@ def route_gallery():
     return render_template("/partials/gallery/gallery.html", image_list=images)
 
 
+@bp.route("/gallery2", methods=['GET'])
+def route_gallery2():
+    images = []
+    for row in get_images():
+        # image = GalleryImage(*row)
+        images.append(row)
+    return render_template("/partials/gallery/gallery2.html", image_list=images)
+
+
 # gets image thumbnail
 @bp.route("/image/thumbnail/<int:id>", methods=['GET'])
 def route_get_image(id):
     image = get_image_by_id(id)
     return render_template("/partials/gallery/image.html", image=image)
+
+
+@bp.route("/image/thumbnail2/<int:id>", methods=['GET'])
+def route_get_image2(id):
+    image = get_image_by_id(id)
+    return render_template("/partials/gallery/image2.html", image=image)
 
 
 # login section
@@ -82,10 +99,12 @@ def route_login_request():
 
     try:
         user = db.execute("SELECT * FROM USERS WHERE USERNAME = ?", (username,)).fetchone()
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
         LOG.error(f"{db.IntegrityError}: Something went wrong...")
         return render_template("/partials/login/login-error.html",
-                               error_type=f"{db.IntegrityError}: Something went wrong...")
+                               error_type=f"{ db.IntegrityError }: Something went wrong...")
 
     if user is None:
         return render_template("/partials/login/login-error.html", error_type=f"Login incorrect!")
@@ -118,10 +137,66 @@ def route_backoffice():
     return render_template("/partials/backoffice/backoffice.html", user=g.user)
 
 
+@bp.route("/backoffice/test", methods=['GET'])
+@login_required
+def route_backoffice_testing_tab():
+    return render_template("/partials/backoffice/backoffice-test.html", user=g.user)
+
+
 @bp.route("/backoffice/gallery", methods=['GET'])
 @login_required
 def route_backoffice_gallery_tab():
     return render_template("/partials/backoffice/backoffice-gallery.html", user=g.user)
+
+
+@bp.route("/backoffice/gallery/list/albums", methods=['GET'])
+@login_required
+def route_backoffice_gallery_list_albums():
+    db = get_db()
+    try:
+        granted_albums = db.execute(
+            "SELECT ALBUM_ID FROM ALBUM_PERMISSIONS WHERE USER_ID=(?) AND GRANTED='TRUE';",
+            (g.user[0],)
+        ).fetchall()
+    except db.OperationalError as error:
+        raise Exception(f"Could not perform query on the database: {error}")
+    except db.IntegrityError:
+        LOG.info = f"{db.IntegrityError}: Something went wrong..."
+        templ = f""" 
+                <a>ERROR: {db.IntegrityError}</a>
+                """
+        return render_template_string(templ)
+    options = ""
+    for item in granted_albums:
+        options += f"<option value={item[0]}>{item[0]}</option>"
+    templ = f"""
+            <select form="filter_form" name="filterOptions">
+                {options}
+            </select>
+            """
+    return render_template_string(templ)
+
+
+@bp.route("/backoffice/gallery/filter/album/", methods=['POST'])
+@login_required
+def route_backoffice_gallery_filter_by_album():
+    album = request.form['filterOptions']
+    db = get_db()
+    try:
+        images = db.execute(
+            f"SELECT * FROM GALLERY WHERE ALBUM=(?) ORDER BY LENGTH(NAME), NAME;",
+            (album,)
+        ).fetchall()
+    except db.OperationalError as error:
+        raise Exception(f"Could not perform query on the database: {error}")
+    except db.IntegrityError:
+        LOG.error(f"{db.IntegrityError}: Something went wrong.")
+        return
+
+    image_list = []
+    for row in images:
+        image_list.append(row)
+    return render_template("/partials/gallery/gallery.html", image_list=image_list)
 
 
 @bp.route("/backoffice/settings", methods=['GET'])
@@ -146,19 +221,25 @@ def route_backoffice_settings_change_password():
         try:
             db.execute(
                 "UPDATE USERS SET HASHED_PASSWORD=(?) WHERE USERNAME=(?);",
-                (hashed_new_password, g.user["username"]) 
+                (hashed_new_password, g.user["username"])
             )
             db.commit()
+        except db.OperationalError as error:
+            raise Exception('Could not perform query on the database: ''{}'.format(error))
         except db.IntegrityError:
-            LOG.info = (f"{db.IntegrityError}: Something went wrong...")
+            LOG.info = f"{ db.IntegrityError }: Something went wrong..."
             templ = f""" 
-            <a>ERROR: {db.IntegrityError}</a>
-            """
+                    <a>ERROR: { db.IntegrityError }</a>
+                    """
             return render_template_string(templ)
     else:
-        templ = """<button class="button is-error is-static">Current password is incorrect! Refresh to try again</button>"""
+        templ = """
+                <button class="button is-error is-static">Current password is incorrect! Refresh to try again</button>
+                """
         return render_template_string(templ)
-    templ = """<button class="button is-sucess is-static">Sucess!</button>"""
+    templ = """
+            <button class="button is-success is-static">Success!</button>
+            """
     return render_template_string(templ)
 
 
@@ -179,14 +260,18 @@ def route_backoffice_settings_create_new_user():
             (new_user, new_username, hashed_new_password, "user"),
         )
         db.commit()
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
-        LOG.info(f"{db.IntegrityError}: Something went wrong...")
+        LOG.info(f"{ db.IntegrityError }: Something went wrong...")
         templ = f""" 
-        <a>ERROR {db.IntegrityError}</a>
+        <a>ERROR { db.IntegrityError }</a>
         """
         return render_template_string(templ)
 
-    templ = """<button class="button is-success is-static">Success!</button>"""
+    templ = """
+            <button class="button is-success is-static">Success!</button>
+            """
     return render_template_string(templ)
 
 
@@ -199,22 +284,26 @@ def route_backoffice_settings_update_album_permissions_album_select():
             "SELECT * FROM ALBUM;"
         )
         db.commit()
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
-        LOG.info(f"{db.IntegrityError}: Something went wrong...")
+        LOG.info(f"{ db.IntegrityError }: Something went wrong...")
         templ = f"""
-            <select>
-                <option>Error... Please try again</option>
-            </select>"""
+                <select>
+                    <option>Error... Please try again</option>
+                </select>
+                """
         return render_template_string(templ)
 
     select_options = ""
     for album in albums.fetchall():
-        select_options = select_options + f"<option>{album[1]}</option>"
+        select_options = select_options + f"<option>{ album[1] }</option>"
     templ = f"""
-        <select form="update_permissions_form" name="update_permissions_form_select">
-            <option>Choose...</option>
-            {select_options}
-        </select>"""
+            <select form="update_permissions_form" name="update_permissions_form_select">
+                <option>Choose...</option>
+                { select_options }
+            </select>
+            """
     return render_template_string(templ)
 
 
@@ -234,9 +323,13 @@ def route_backoffice_settings_update_album_permissions():
             "SELECT * FROM ALBUM;"
         )
         db.commit()
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
-        LOG.info(f"{db.IntegrityError}: Something went wrong...")
-        templ = f"""<button class="button is-error is-static">Error: {db.IntegrityError}</button>"""
+        LOG.info(f"{ db.IntegrityError }: Something went wrong...")
+        templ = f"""
+                <button class="button is-error is-static">Error: { db.IntegrityError }</button>
+                """
         return render_template_string(templ)
 
     try:
@@ -245,9 +338,13 @@ def route_backoffice_settings_update_album_permissions():
             (username,),
         )
         db.commit()
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
-        LOG.info(f"{db.IntegrityError}: Something went wrong...")
-        templ = f"""<button class="button is-error is-static">Error: {db.IntegrityError}</button>"""
+        LOG.info(f"{ db.IntegrityError }: Something went wrong...")
+        templ = f"""
+                <button class="button is-error is-static">Error: { db.IntegrityError }</button>
+                """
         return render_template_string(templ)
 
     albums = album_query.fetchall()
@@ -263,8 +360,12 @@ def route_backoffice_settings_update_album_permissions():
                 (user['ID'], selected_album, granted)
             )
             db.commit()
+        except db.OperationalError as error:
+            raise Exception('Could not perform query on the database: ''{}'.format(error))
         except db.IntegrityError:
-            templ = f"""<button class="button is-error is-static">Error: {db.IntegrityError}</button>"""
+            templ = f"""
+                    <button class="button is-error is-static">Error: { db.IntegrityError }</button>
+                    """
             return render_template_string(templ)
     else:
         try:
@@ -273,12 +374,41 @@ def route_backoffice_settings_update_album_permissions():
                 (granted, user['ID'], selected_album)
             )
             db.commit()
+        except db.OperationalError as error:
+            raise Exception('Could not perform query on the database: ''{}'.format(error))
         except db.IntegrityError:
-            LOG.error(f"{db.IntegrityError}: Something went wrong while adding ALBUM_PERMISSIONS table.")
-            templ = f"""<button class="button is-error is-static">Error: {db.IntegrityError}</button>"""
+            LOG.error(f"{ db.IntegrityError }: Something went wrong while adding ALBUM_PERMISSIONS table.")
+            templ = f"""
+                    <button class="button is-error is-static">Error: { db.IntegrityError }</button>
+                    """
             return render_template_string(templ)
 
-    templ = f"""<button class="button is-success is-static">Success!</button>"""
+    templ = f"""
+            <button class="button is-success is-static">Success!</button>
+            """
+    return render_template_string(templ)
+
+
+#
+@bp.route("/backoffice/settings/update_album_permissions/make_thumbnails", methods=['GET'])
+@login_required
+def route_make_thumbnails():
+    make_thumbnails()
+    templ = f"""
+                <button class="button is-success is-static">Success!</button>
+                """
+    return render_template_string(templ)
+
+
+@bp.route("/backoffice/settings/update_album_permissions/make_gallery", methods=['GET'])
+@login_required
+def route_make_gallery():
+    init_album_table()
+    make_gallery(current_app)
+    update_album_permissions_table()
+    templ = f"""
+                <button class="button is-success is-static">Success!</button>
+                """
     return render_template_string(templ)
 
 
@@ -307,8 +437,10 @@ def route_image_full_check(album, image_name, extension):
                 "SELECT ALBUM_ID FROM ALBUM_PERMISSIONS WHERE USER_ID=(?) AND GRANTED='TRUE';",
                 (g.user[0],)
             )
+        except db.OperationalError as error:
+            raise Exception('Could not perform query on the database: ''{}'.format(error))
         except db.IntegrityError:
-            LOG.error(f"{db.IntegrityError}: Something went wrong.")
+            LOG.error(f"{ db.IntegrityError }: Something went wrong.")
             return
 
         for db_album in granted_albums:
@@ -333,8 +465,10 @@ def get_images():
             images = db.execute(
                 "SELECT * FROM GALLERY WHERE ALBUM='ROOT' ORDER BY LENGTH(NAME), NAME;"
             )
+        except db.OperationalError as error:
+            raise Exception('Could not perform query on the database: ''{}'.format(error))
         except db.IntegrityError:
-            LOG.error(f"{db.IntegrityError}: Something went wrong.")
+            LOG.error(f"{ db.IntegrityError }: Something went wrong.")
             return
         return images.fetchall()
     else:
@@ -347,8 +481,10 @@ def get_images():
                 "SELECT COUNT(ALBUM_ID) FROM ALBUM_PERMISSIONS WHERE USER_ID=(?) AND GRANTED='TRUE';",
                 (g.user[0],)
             )
+        except db.OperationalError as error:
+            raise Exception('Could not perform query on the database: ''{}'.format(error))
         except db.IntegrityError:
-            LOG.error(f"{db.IntegrityError}: Something went wrong.")
+            LOG.error(f"{ db.IntegrityError }: Something went wrong.")
             return
 
         sql_query = ""
@@ -362,10 +498,12 @@ def get_images():
                 sql_query = sql_query + "ALBUM='" + album[0] + "' OR "
         try:
             images = db.execute(
-                f"SELECT * FROM GALLERY WHERE {sql_query} ORDER BY LENGTH(NAME), NAME;"
+                f"SELECT * FROM GALLERY WHERE { sql_query } ORDER BY LENGTH(NAME), NAME;"
             )
+        except db.OperationalError as error:
+            raise Exception('Could not perform query on the database: ''{}'.format(error))
         except db.IntegrityError:
-            LOG.error(f"{db.IntegrityError}: Something went wrong.")
+            LOG.error(f"{ db.IntegrityError }: Something went wrong.")
             return
 
         return images.fetchall()
@@ -378,11 +516,11 @@ def get_image_by_id(id):
             "SELECT * FROM GALLERY WHERE ID = ?;",
             (id,)
         )
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
-        LOG.error(f"{db.IntegrityError}: Something went wrong.")
+        LOG.error(f"{ db.IntegrityError }: Something went wrong.")
         return
     return image.fetchone()
-
-
 
 

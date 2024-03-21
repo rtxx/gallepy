@@ -8,7 +8,8 @@ from .db import get_db
 
 class GalleryImage:
 
-    def __init__(self, id, name, image_path, thumbnail_path, album, image_width, image_height, thumbnail_width, thumbnail_height):
+    def __init__(self, id, name, image_path, thumbnail_path, album, image_width, image_height, thumbnail_width,
+                 thumbnail_height):
         self.id = id or "null"
         self.name = name
         self.image_path = image_path
@@ -20,7 +21,7 @@ class GalleryImage:
         self.thumbnail_height = thumbnail_height
         # LOG.info(f"new image: {self.number} : {self.name}")
 
-        
+
 def init_app(app):
     app.cli.add_command(make_thumbnails_command)
     app.cli.add_command(make_gallery_command)
@@ -100,6 +101,8 @@ def delete_gallery_data():
         )
         db.commit()
         LOG.info(f"Deleted all rows from GALLERY")
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
         LOG.error(f"{db.IntegrityError}: Something went wrong while removing all rows from GALLERY table.")
         LOG.error(f"Something went wrong, exiting...")
@@ -113,6 +116,8 @@ def delete_gallery_data():
         )
         db.commit()
         LOG.info(f"Resetting AUTOINCREMENT from GALLERY table")
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
         LOG.error(f"{db.IntegrityError}: Something went wrong while setting sqlite_sequence to 0.")
         LOG.error(f"Something went wrong, exiting...")
@@ -133,6 +138,8 @@ def insert_image_db(image):
              image.thumbnail_height, image.thumbnail_height),
         )
         db.commit()
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
         LOG.error(f"{db.IntegrityError}: Something went wrong while inserting {image.name} into the db.")
         LOG.error(f"Something went wrong, exiting...")
@@ -207,16 +214,43 @@ def make_gallery(app):
     return
 
 
-# redundant function, just pass "ROOT" album name
+# initializes album table
 def init_album_table():
     db = get_db()
+
+    try:
+        db.execute(
+            "DELETE FROM ALBUM;"
+        )
+        db.commit()
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
+    except db.IntegrityError:
+        LOG.error(f"{db.IntegrityError}: Something went wrong while initializing ALBUM table.")
+        return
+
+    try:
+        db.execute(
+            "UPDATE `sqlite_sequence` SET `seq` = 0 WHERE `name` = 'ALBUM';"
+        )
+        db.commit()
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
+    except db.IntegrityError:
+        LOG.error(f"{db.IntegrityError}: Something went wrong while setting sqlite_sequence to 0.")
+        LOG.error(f"Something went wrong, exiting...")
+        return
+
+    # adds ROOT album by default
     try:
         db.execute(
             "INSERT INTO ALBUM (NAME) SELECT (?) WHERE NOT EXISTS(SELECT 1 FROM ALBUM WHERE NAME=(?));",
-            ("ROOT","ROOT")
+            ("ROOT", "ROOT")
         )
         db.commit()
         LOG.info(f"ALBUM table initialized")
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
         LOG.error(f"{db.IntegrityError}: Something went wrong while initializing ALBUM table.")
         return
@@ -224,18 +258,73 @@ def init_album_table():
 
 def insert_new_album(album):
     db = get_db()
-    try: 
+    try:
         db.execute(
             "INSERT INTO ALBUM (NAME) SELECT (?) WHERE NOT EXISTS(SELECT 1 FROM ALBUM WHERE NAME=(?));",
-            (album,album)
+            (album, album)
         )
         db.commit()
         LOG.info(f"New album added to table ALBUM: {album}")
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
         LOG.error(f"{db.IntegrityError}: Something went wrong while adding new album to ALBUM table.")
         return
 
 
+# update album permissions with new albums
+# https://www.sitepoint.com/community/t/sql-join-that-excludes-records-which-match/8195
+def update_album_permissions_table():
+    db = get_db()
+    LOG.info("Updating ALBUM_PERMISSIONS table")
+    try:
+        query = db.execute(
+            f"""SELECT ALBUM_PERMISSIONS.ID FROM ALBUM_PERMISSIONS
+                LEFT OUTER JOIN ALBUM ON
+                ALBUM_PERMISSIONS.ALBUM_ID = ALBUM.NAME WHERE ALBUM.NAME IS NULL;"""
+        )
+
+        for entry in query.fetchall():
+            try:
+                db.execute(
+                    f"""DELETE FROM ALBUM_PERMISSIONS
+                        WHERE ID = (?);""", (entry[0],)
+                )
+                db.commit()
+                LOG.warning(f" Deleted non existent album from permissions ID: {entry[0]}")
+            except db.OperationalError as error:
+                raise Exception('Could not perform query on the database: ''{}'.format(error))
+            except db.IntegrityError:
+                LOG.error(f"{db.IntegrityError}: Something went wrong.")
+                return
+
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
+    except db.IntegrityError:
+        LOG.error(f"{db.IntegrityError}: Something went wrong.")
+        return
+
+    # add album ROOT permission to user 1: admin
+    check_if_rule_exists = db.execute("SELECT 1 FROM ALBUM_PERMISSIONS WHERE USER_ID=(?) AND ALBUM_ID=(?);",
+                                      ("1", "ROOT")
+                                      )
+    if check_if_rule_exists.fetchone() is None:
+        try:
+            db.execute(
+                "INSERT INTO ALBUM_PERMISSIONS(USER_ID, ALBUM_ID, GRANTED) VALUES (?, ?, ?);",
+                ("1", "ROOT", "TRUE")
+            )
+            db.commit()
+        except db.OperationalError as error:
+            raise Exception('Could not perform query on the database: ''{}'.format(error))
+        except db.IntegrityError:
+            LOG.error(f"{db.IntegrityError}: Something went wrong.")
+
+    LOG.info("Done!")
+    return
+
+
+# WRONG CHANGE THIS
 def init_album_permissions_table():
     db = get_db()
     # assuming admin is user_id 1
@@ -247,6 +336,8 @@ def init_album_permissions_table():
         query = db.execute(
             "SELECT * FROM ALBUM;"
         )
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
         LOG.error(f"{db.IntegrityError}: Something went wrong.")
         return
@@ -255,14 +346,14 @@ def init_album_permissions_table():
         for album in albums:
             db.execute(
                 "INSERT INTO ALBUM_PERMISSIONS(USER_ID, ALBUM_ID, GRANTED) SELECT 1, (?), 'TRUE' WHERE NOT EXISTS(SELECT 1 FROM ALBUM_PERMISSIONS WHERE USER_ID=1 AND ALBUM_ID=(?) AND GRANTED='TRUE');",
-                (album[1],album[1])
+                (album[1], album[1])
             )
             db.commit()
-            #LOG.info(f"admin has {album[1]} permission")
+            # LOG.info(f"admin has {album[1]} permission")
+    except db.OperationalError as error:
+        raise Exception('Could not perform query on the database: ''{}'.format(error))
     except db.IntegrityError:
         LOG.error(f"{db.IntegrityError}: Something went wrong while initializing ALBUM_PERMISSIONS table.")
         return
     LOG.info("Done!")
     return
-
-

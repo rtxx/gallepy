@@ -1,5 +1,5 @@
 {% if user.type == "admin"  %}
-<div class="box has-background-info-light">
+<div class="box has-background-info-light" xmlns="http://www.w3.org/1999/html">
   <label class="label">Administration</label>
   <!-- create new user form -->
   <div class="box">
@@ -50,7 +50,6 @@
   <!-- update albuns permissions -->
   <div class="box">
 
-
     <fieldset>
       <label class="label">Update album permissions</label>
       <div class="field">
@@ -99,6 +98,30 @@
 
     </fieldset>
   </div>
+
+  <!-- gallepy server functions -->
+  <div class="box">
+     <label class="label">Gallepy</label>
+        <button
+                hx-get="/backoffice/settings/update_album_permissions/make_gallery"
+                hx-target="this"
+                hx-swap="outerHTML" class="button is-link" type="submit"
+                _="on click add .is-static .is-loading "> Remake gallery
+        </button>
+        <p class="help">Use this if images were added / removed. If there's a problem with albums not being detected, use this too.</p>
+            <p class="help"></p>
+
+        <button
+                hx-get="/backoffice/settings/update_album_permissions/make_thumbnails"
+                hx-target="this"
+                hx-swap="outerHTML" class="button is-link" type="submit"
+                _="on click add .is-static .is-loading ">Make thumbnails
+        </button>
+      <p class="help">Please note if there are thumbnails available this will not replace them. Delete them first them run again.</p>
+      <p class="help">You can control gallepy with these options.</p>
+    </div>
+  </div>
+
 </div>
 {% endif %}
 

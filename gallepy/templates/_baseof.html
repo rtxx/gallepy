@@ -16,7 +16,7 @@
 	<script src="https://unpkg.com/hyperscript.org" crossorigin="anonymous"></script>
     <!-- PhotoSwipe -->
     <link rel="stylesheet" type="text/css" href="/static/PhotoSwipe-5.4.2/dist/photoswipe.css">
-	<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	<title>gallepy</title>
 </head>
 <body>
@@ -26,18 +26,8 @@
         </div>
     </section>
 
-    <!--
     <section class="section">
-      {% for message in get_flashed_messages() %}
-        <div class="notification">
-            <button class="delete" _="on click remove #login_notification"></button>
-            {{ message }}
-        </div>
-      {% endfor %}
-    </section>-->
-
-    <section class="section">
-        <div class="container box">
+        <div class="container">
             {% block main %}
             {% endblock main %}
         </div>
