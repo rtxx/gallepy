@@ -15,7 +15,7 @@ It has some features, like:
 - Smooth CSS animations
 - Made with [Bulma CSS](https://bulma.io/)
 
-Check [here](https://photos.ruiteixeira.me) to see in action.
+Check [here](https://gallery.ducknexus.com/) to see in action.
 ![Main Page](https://cloud.ducknexus.com/s/bfYLqRaBpFdZnXx/download/gallepy1.png)
 ![User page](https://cloud.ducknexus.com/s/XDbnjsLGy422erW/download/gallepy3.png)
 ## Python requirements
